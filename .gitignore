@@ -1,0 +1,42 @@
+# Bundler
+/.bundle
+
+.env
+
+# Logs and temps.
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
+# REPL
+.byebug_history
+
+# Node stuff
+/public/packs
+/public/packs-test
+/node_modules
+/yarn-error.log
+
+# editor stuff
+.idea
+.idea/dataSources.xml
+tags
+*.sublime-workspace
+*.sublime-project
+.project
+
+# OS stuff
+.DS_Store
+
+# CI stuff
+.yardoc
+.yardoc/**
+/_yardoc
+coverage/**
+doc/**
+
+# RSpec stuff
+.rspec_status
+spec/examples.txt
+spec/reports

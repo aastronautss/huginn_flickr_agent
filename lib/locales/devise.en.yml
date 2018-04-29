@@ -1,0 +1,4 @@
+en:
+  devise:
+    omniauth_providers:
+      flickr: 'Flickr'

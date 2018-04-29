@@ -98,7 +98,7 @@ module Agents
         per_page: interpolated['count'],
         min_fave_date: starting_at.to_i,
 
-        extras: 'description,url_o,owner_name,date_uploaded,date_taken'
+        extras: 'description,owner_name,date_uploaded,date_taken,url_o,url_m,url_n,url_z,url_c,url_l,url_h,url_k'
       }
       favorites = flickr.favorites.getList(opts)
       memory[:last_seen] ||= []

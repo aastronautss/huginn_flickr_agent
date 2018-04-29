@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.summary       = 'The Huginn Flickr agent provides interactions with the Flickr API.'
   spec.description   = 'The Huginn Flickr agent provides interactions with the Flickr API.'
 
-  spec.homepage      = 'https://github.com/[my-github-username]/huginn_flickr_agent'
+  spec.homepage      = 'https://github.com/aastronautss/huginn_flickr_agent'
 
   spec.license       = 'MIT'
 
@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
 
-  spec.add_runtime_dependency 'huginn_agent'
   spec.add_runtime_dependency 'flickraw'
+  spec.add_runtime_dependency 'huginn_agent'
   spec.add_runtime_dependency 'omniauth-flickr'
 end

@@ -1,4 +1,9 @@
+# frozen_string_literal: true
+
 module Agents
+  ##
+  # = Huginn Flickr agent
+  #
   class FlickrAgent < Agent
     default_schedule '12h'
 

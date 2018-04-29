@@ -11,6 +11,9 @@ require 'omniauth-flickr'
 module HuginnFlickrAgent
   I18n.load_path << "#{File.dirname(__FILE__)}/locales/devise.en.yml"
 
+  FlickRaw.api_key = ENV['FLICKR_OAUTH_KEY']
+  FlickRaw.shared_secret = ENV['FLICKR_OAUTH_SECRET']
+
   Devise.setup do |config|
     key = ENV['FLICKR_OAUTH_KEY']
     secret = ENV['FLICKR_OAUTH_SECRET']
@@ -22,4 +25,4 @@ module HuginnFlickrAgent
 end
 
 HuginnAgent.load 'huginn_flickr_agent/concerns/flickr_agentable'
-HuginnAgent.register 'huginn_flickr_agent/flickr_agent'
+HuginnAgent.register 'huginn_flickr_agent/flickr_favorites_agent'

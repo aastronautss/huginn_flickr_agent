@@ -13,7 +13,7 @@ module FlickrAgentable
     valid_oauth_providers :flickr
 
     gem_dependency_check do
-      defined?(FlickRaw::Client) &&
+      defined?(FlickRaw::Flickr) &&
         Devise.omniauth_providers.include?(:flickr) &&
         ENV['FLICKR_OAUTH_KEY'].present? &&
         ENV['FLICKR_OAUTH_SECRET'].present?

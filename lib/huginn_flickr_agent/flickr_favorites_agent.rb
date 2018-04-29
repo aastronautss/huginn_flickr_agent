@@ -92,7 +92,7 @@ module Agents
     end
 
     def check
-      user_id = user_id_for_username(interpolated['username'])
+      user_id = find_user_id_for_username(interpolated['username'])
       opts = {
         user_id: user_id,
         per_page: interpolated['count'],
@@ -100,15 +100,15 @@ module Agents
 
         extras: 'description,url_o,owner_name,date_uploaded,date_taken'
       }
-      favorites = flickr.favorites.getList(opts).with_indifferent_access
+      favorites = flickr.favorites.getList(opts)
       memory[:last_seen] ||= []
 
       favorites.each do |favorite|
-        next if memory[:last_seen].include?(favorite[:id]) || favorite[:date_faved].to_i < starting_at.to_i
+        next if memory[:last_seen].include?(favorite.id) || favorite.date_faved.to_i < starting_at.to_i
 
-        memory[:last_seen].push(favorite[:id])
+        memory[:last_seen].push(favorite.id)
         memory[:last_seen].shift if memory[:last_seen].length > interpolated['history'].to_i
-        create_event payload: favorite
+        create_event payload: favorite.to_hash
       end
     end
   end

@@ -66,13 +66,13 @@ module FlickrAgentable
   def find_user_id_for_username(username)
     memory[:user_ids] ||= {}
 
-    memory[:user_ids][username] = user_data_for_username(username)[:nsid] unless memory[:user_ids].key?(username)
+    memory[:user_ids][username] = user_data_for_username(username).nsid unless memory[:user_ids].key?(username)
     memory[:user_ids][username]
   end
 
   private
 
   def user_data_for_username(username)
-    flickr.people.findByUsername(username: username).with_indifferent_access
+    flickr.people.findByUsername(username: username)
   end
 end

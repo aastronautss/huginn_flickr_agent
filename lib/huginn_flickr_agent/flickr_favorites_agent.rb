@@ -26,27 +26,34 @@ module Agents
     event_description <<~MD
       Events are the raw JSON provided by the Flickr API, with the following extras: `dateupload`, `datetaken`, `ownername`, `description`, `url_o`, the last of which is the URL for the image in its original upload resolution. Looks like:
 
-        {
-          "id": "97517896524",
-          "owner": "28698345@N00",
-          "secret": "132148e84d",
-          "server": "954",
-          "farm": 1,
-          "title": "The title of the photo",
-          "ispublic": 1,
-          "isfriend": 0,
-          "isfamily": 0,
-          "description": "",
-          "dateupload": "1524686005",
-          "datetaken": "2018-04-24 01:03:10",
-          "datetakengranularity": "0",
-          "datetakenunknown": "0",
-          "ownername": "The owner of the photo",
-          "date_faved": "1524753471",
-          "url_o": "https://farm1.staticflickr.com/some/url.jpg",
-          "height_o": "1700",
-          "width_o": "1500"
-        }
+          {
+            "id": "97517896524",
+            "owner": "28698345@N00",
+            "secret": "132148e84d",
+            "server": "954",
+            "farm": 1,
+            "title": "The title of the photo",
+            "ispublic": 1,
+            "isfriend": 0,
+            "isfamily": 0,
+            "description": "",
+            "dateupload": "1524686005",
+            "datetaken": "2018-04-24 01:03:10",
+            "datetakengranularity": "0",
+            "datetakenunknown": "0",
+            "ownername": "The owner of the photo",
+            "date_faved": "1524753471",
+            "url_o": "https://farm1.staticflickr.com/some/url.jpg",
+            "url_m": "https://farm1.staticflickr.com/some/url.jpg",
+            "url_n": "https://farm1.staticflickr.com/some/url.jpg",
+            "url_z": "https://farm1.staticflickr.com/some/url.jpg",
+            "url_c": "https://farm1.staticflickr.com/some/url.jpg",
+            "url_l": "https://farm1.staticflickr.com/some/url.jpg",
+            "url_h": "https://farm1.staticflickr.com/some/url.jpg",
+            "url_k": "https://farm1.staticflickr.com/some/url.jpg",
+            "height_o": "1700",
+            "width_o": "1500"
+          }
     MD
 
     default_schedule 'every_1h'

@@ -62,9 +62,18 @@ module Agents
     end
 
     def check
+      photos = flickr.people.getPhotos(check_request_opts)
+      memory[:last_seen] ||= []
+
+      photos.each { |photo| handle_photo(photo) }
+    end
+
+    private
+
+    def check_request_opts
       user_id = find_user_id_for_username(interpolated['username'])
 
-      opts = {
+      {
         user_id: user_id,
         per_page: interpolated['count'],
         safe_search: interpolated['safe_search'],
@@ -72,18 +81,24 @@ module Agents
 
         extras: 'description,owner_name,date_upload,date_taken,date_taken,url_o,url_m,url_n,url_z,url_c,url_l,url_h,url_k'
       }
+    end
 
-      photos = flickr.people.getPhotos(opts)
-      memory[:last_seen] ||= []
+    def handle_photo(photo)
+      return if memory[:last_seen].include?(photo.id) || photo.dateupload.to_i < starting_at.to_i
 
-      photos.each do |photo|
-        next if memory[:last_seen].include?(photo.id) || photo.dateupload.to_i < starting_at.to_i
+      memory[:last_seen].push(photo.id)
+      memory[:last_seen].shift if memory[:last_seen].length > interpolated['history'].to_i
 
-        memory[:last_seen].push(photo.id)
-        memory[:last_seen].shift if memory[:last_seen].length > interpolated['history'].to_i
+      create_event payload: payload_for_photo(photo)
+    end
 
-        create_event payload: photo.to_hash
-      end
+    def payload_for_photo(photo)
+      photopage_url = FlickRaw.url_photopage(photo)
+
+      payload = photo.to_hash
+      payload[:photopage_url] = photopage_url
+
+      payload
     end
   end
 end

@@ -10,17 +10,79 @@ module Agents
 
     cannot_receive_events!
 
-    default_schedule 'every_1h'
-
     description <<-MD
       Checks the Flickr feed of the provided user and creates an event for each upload.
+
+      #{flickr_dependencies_missing if dependencies_missing?}
+
+      To be able to use this Agent you need to authenticate with Flickr in the [Services](/services) section first.
+
+      You must also provide the `username` of the Flickr user--use `me` if you would like to retrieve your favorites. `number` refers to the number of latest favorites to monitor and `history` refers to the number of favorites that will be held in memory.
+
+      Set `expected_update_period_in_days` to the maximum amount of time that you'd expect to pass between Events being created by this Agent.
+
+      Set `starting_at` to the date/time (eg. `Mon Jun 02 00:38:12 +0000 2014`) you want to start receiving favorites from (default: agent's `created_at`)
     MD
+
+    event_description <<~MD
+      Events are the raw JSON provided by the Flickr API, with the following extras: `dateupload`, `datetaken`, `ownername`, `description`, `url_o`, `url_l`, and `photopage_url`. `url_o` and `url_l` are direct links to the original (if available) and resized image, respectively. Events will look like:
+
+          {
+            "id": "1859181898",
+            "owner": "7531567@N00",
+            "secret": "45ab547e",
+            "server": "4737",
+            "farm": 5,
+            "title": "",
+            "ispublic": 1,
+            "isfriend": 0,
+            "isfamily": 0,
+            "description": "",
+            "dateupload": "1514876027",
+            "datetaken": "2017-12-10 16:17:26",
+            "datetakengranularity": "0",
+            "datetakenunknown": "0",
+            "ownername": "some_user",
+            "url_o": "https://farm5.staticflickr.com/some/url.jpg",
+            "height_o": "4032",
+            "width_o": "3024",
+            "url_m": "https://farm5.staticflickr.com/some/url.jpg",
+            "height_m": "500",
+            "width_m": "375",
+            "url_n": "https://farm5.staticflickr.com/some/url.jpg",
+            "height_n": "320",
+            "width_n": 240,
+            "url_z": "https://farm5.staticflickr.com/some/url.jpg",
+            "height_z": "640",
+            "width_z": "480",
+            "url_c": "https://farm5.staticflickr.com/some/url.jpg",
+            "height_c": "800",
+            "width_c": 600,
+            "url_l": "https://farm5.staticflickr.com/some/url.jpg",
+            "height_l": "1024",
+            "width_l": "768",
+            "url_h": "https://farm5.staticflickr.com/some/url.jpg",
+            "height_h": "1600",
+            "width_h": 1200,
+            "url_k": "https://farm5.staticflickr.com/some/url.jpg",
+            "height_k": "2048",
+            "width_k": 1536,
+            "photopage_url": "https://www.flickr.com/photos/7531567@N00/1859181898"
+          }
+    MD
+
+    default_schedule 'every_1h'
 
     form_configurable :username
     form_configurable :count
     form_configurable :history
     form_configurable :expected_update_period_in_days
     form_configurable :starting_at
+    form_configurable :safe_search, type: array, values: SAFE_SEARCH_OPTIONS.keys
+
+    def working?
+      event_created_within?(interpolated['expected_update_period_in_days']) && checked_without_error?
+    end
 
     def default_options
       {
@@ -47,10 +109,6 @@ module Agents
       if options[:starting_at].present?
         Time.parse(options[:starting_at]) rescue errors.add(:base, 'Error parsing starting_at')
       end
-    end
-
-    def working?
-      event_created_within?(interpolated['expected_update_period_in_days']) && checked_without_error?
     end
 
     def starting_at
@@ -93,10 +151,8 @@ module Agents
     end
 
     def payload_for_photo(photo)
-      photopage_url = FlickRaw.url_photopage(photo)
-
       payload = photo.to_hash
-      payload[:photopage_url] = photopage_url
+      payload[:photopage_url] = photopage_url_for(photo)
 
       payload
     end

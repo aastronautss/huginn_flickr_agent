@@ -35,7 +35,7 @@ module FlickrAgentable
     MD
   end
 
-  module ClassMethods
+  class_methods do
     def flickr_dependencies_missing
       if ENV['FLICKR_OAUTH_KEY'].blank? || ENV['FLICKR_OAUTH_SECRET'].blank?
         '## Set FLICKR_OAUTH_KEY and FLICKR_OAUTH_SECRET in your environment to use Flickr agents.'
@@ -81,6 +81,10 @@ module FlickrAgentable
 
     memory[:user_ids][username] = user_data_for_username(username).nsid unless memory[:user_ids].key?(username)
     memory[:user_ids][username]
+  end
+
+  def photopage_url_for(item)
+    FlickRaw.url_photopage(item)
   end
 
   private

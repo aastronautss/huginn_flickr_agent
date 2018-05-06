@@ -25,7 +25,7 @@ module Agents
     MD
 
     event_description <<~MD
-      Events are the raw JSON provided by the Flickr API, with the following extras: `dateupload`, `datetaken`, `ownername`, `description`, `url_o`, the last of which is the URL for the image in its original upload resolution. Looks like:
+      Events are the raw JSON provided by the Flickr API, with the following extras: `dateupload`, `datetaken`, `ownername`, `description`, `url_l`, and `url_o`, the last of which is the URL for the image in its original upload resolution. Looks like:
 
           {
             "id": "97517896524",
@@ -111,14 +111,18 @@ module Agents
       favorites = flickr.favorites.getList(opts)
       memory[:last_seen] ||= []
 
-      favorites.each do |favorite|
-        next if memory[:last_seen].include?(favorite.id) || favorite.date_faved.to_i < starting_at.to_i
+      favorites.each { |favorite| handle_photo(favorite) }
+    end
 
-        memory[:last_seen].push(favorite.id)
-        memory[:last_seen].shift if memory[:last_seen].length > interpolated['history'].to_i
+    private
 
-        create_event payload: favorite.to_hash
-      end
+    def handle_photo(photo)
+      return if memory[:last_seen].include?(photo.id) || photo.date_faved.to_i < starting_at.to_i
+
+      memory[:last_seen].push(photo.id)
+      memory[:last_seen].shift if memory[:last_seen].length > interpolated['history'].to_i
+
+      create_event payload: photo.to_hash
     end
   end
 end

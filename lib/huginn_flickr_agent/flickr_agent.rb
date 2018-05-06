@@ -78,7 +78,7 @@ module Agents
     form_configurable :history
     form_configurable :expected_update_period_in_days
     form_configurable :starting_at
-    form_configurable :safe_search, type: array, values: SAFE_SEARCH_OPTIONS.keys
+    form_configurable :safe_search, type: :array, values: SAFE_SEARCH_OPTIONS.keys
 
     def working?
       event_created_within?(interpolated['expected_update_period_in_days']) && checked_without_error?

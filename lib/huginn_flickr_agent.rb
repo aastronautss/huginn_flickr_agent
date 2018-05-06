@@ -25,4 +25,6 @@ module HuginnFlickrAgent
 end
 
 HuginnAgent.load 'huginn_flickr_agent/concerns/flickr_agentable'
+
 HuginnAgent.register 'huginn_flickr_agent/flickr_favorites_agent'
+HuginnAgent.register 'huginn_flickr_agent/flickr_agent'

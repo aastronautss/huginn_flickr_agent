@@ -6,8 +6,19 @@
 module FlickrAgentable
   extend ActiveSupport::Concern
 
+  ME = 'me'
+
+  SS_SAFE = 'safe'
+  SS_MODERATED = 'moderated'
+  SS_RESTRICTED = 'restricted'
+
+  SAFE_SEARCH_OPTIONS = {
+    SS_SAFE => 1,
+    SS_MODERATED => 2,
+    SS_RESTRICTED => 3
+  }.freeze
+
   included do
-    include FormConfigurable
     include Oauthable
 
     valid_oauth_providers :flickr
@@ -64,6 +75,8 @@ module FlickrAgentable
   end
 
   def find_user_id_for_username(username)
+    return username if username == ME
+
     memory[:user_ids] ||= {}
 
     memory[:user_ids][username] = user_data_for_username(username).nsid unless memory[:user_ids].key?(username)

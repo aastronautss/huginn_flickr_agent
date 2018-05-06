@@ -5,6 +5,7 @@ module Agents
   # = Huginn Flickr Favorites agent
   #
   class FlickrFavoritesAgent < Agent
+    include FormConfigurable
     include FlickrAgentable
 
     cannot_receive_events!
@@ -16,7 +17,7 @@ module Agents
 
       To be able to use this Agent you need to authenticate with Flickr in the [Services](/services) section first.
 
-      You must also provide the `username` of the Flickr user, `number` of latest favorites to monitor and `history` as number of favorites that will be held in memory.
+      You must also provide the `username` of the Flickr user--use `me` if you would like to retrieve your favorites. `number` refers to the number of latest favorites to monitor and `history` refers to the number of favorites that will be held in memory.
 
       Set `expected_update_period_in_days` to the maximum amount of time that you'd expect to pass between Events being created by this Agent.
 
@@ -70,7 +71,7 @@ module Agents
 
     def default_options
       {
-        'username' => 'aastronautss',
+        'username' => 'me',
         'count' => '10',
         'history' => '100',
         'expected_update_period_in_days' => '2'
@@ -86,7 +87,7 @@ module Agents
       end
 
       if options[:starting_at].present?
-        Time.parse(options[:starting_at]) rescue errors.add(:base, "Error parsing starting_at")
+        Time.parse(options[:starting_at]) rescue errors.add(:base, 'Error parsing starting_at')
       end
     end
 
@@ -115,6 +116,7 @@ module Agents
 
         memory[:last_seen].push(favorite.id)
         memory[:last_seen].shift if memory[:last_seen].length > interpolated['history'].to_i
+
         create_event payload: favorite.to_hash
       end
     end
